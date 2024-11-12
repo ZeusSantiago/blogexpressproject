@@ -59,9 +59,51 @@ router.post("/admin", async (req, res) => {
   }
 });
 
-//POST / Admin - Login Check
+//POST / Admin - Dashboard
+// router.get("/dashboard", authMiddleware, async (req, res) => {
+//   res.render("admin/dashboard");
+// });
+
+//GET / Admin - Dashboard
 router.get("/dashboard", authMiddleware, async (req, res) => {
-  res.render("admin/dashboard");
+  try {
+    const locals = {
+      title: "Dashboard",
+      description: "simple blog created with node, express & mongodb",
+    };
+    const data = await Post.find();
+    res.render("admin/dashboard", { locals, data, layout: adminLayout });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//GET / Admin - Create new post
+router.get("/add-post", authMiddleware, async (req, res) => {
+  try {
+    const locals = {
+      title: "Add Post",
+      description: "simple blog created with node, express & mongodb",
+    };
+    const data = await Post.find();
+    res.render("admin/add-post", { locals, data, layout: adminLayout });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//POST / Admin - Create new post
+router.post("/add-post", authMiddleware, async (req, res) => {
+  try {
+    const newPost = new Post({
+      title: req.body.title,
+      body: req.body.body,
+    });
+    await Post.create(newPost);
+    res.redirect("/dashboard");
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // //POST / Admin - Login Check
